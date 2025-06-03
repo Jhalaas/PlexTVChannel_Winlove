@@ -19,6 +19,10 @@
 
 - FFmpeg [linux guide] (https://linoxide.com/linux-how-to/install-ffmpeg-centos-7/)
 
+### Windows Usage
+
+Run **setup_windows.bat** once to install the required Python packages and create a desktop shortcut. After the setup completes you can simply double click the **PlexTVChannel_GUI** shortcut on your desktop to open the graphical interface. The GUI lets you configure options and will update `config.py` before running `generatePlaylist.py` and `generateXMLTV.py` for you.
+
 ---
 
 **A few notes:** I am using a *Linux* Server. You may need to adjust steps to make this work for your individual setup. This works by using vlc to start an http stream and then have xTeVe start capturing it. Then you add xTeVe into the Plex DVR section as a new device. It is pretty straight forward. To get VLC working, you need to generate a M3U playlist so it plays your list of videos in order, continuously. I wrote my Python script to generate this M3U file and generate a XMLTV guide to import into Plex.

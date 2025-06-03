@@ -1,0 +1,2 @@
+moviepy
+tvdb_api
