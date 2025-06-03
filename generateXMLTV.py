@@ -1,3 +1,4 @@
+import os
 import time
 from datetime import datetime, timedelta
 import temp_variables
@@ -8,11 +9,11 @@ def generateGuideData(myTvDirectory, myBackup, myShowDurations):
 
     # Replace time in xmltv files
     ## Need to do this after execution b/c script takes long to execute
-    f1 = open(myTvDirectory + 'temp_xmltv.xml', 'r')
+    f1 = open(os.path.join(myTvDirectory, 'temp_xmltv.xml'), 'r')
     if not myBackup:
-        f2 = open(myTvDirectory + 'xmltv.xml', 'w')
+        f2 = open(os.path.join(myTvDirectory, 'xmltv.xml'), 'w')
     else:
-        f2 = open(myTvDirectory + 'xmltv1.xml', 'w')
+        f2 = open(os.path.join(myTvDirectory, 'xmltv1.xml'), 'w')
 
     # Wait for script to run on the minute (0 seconds)
     timeObject = datetime.now()
