@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Generating playlist for Todderang"
 
-python3 /path/to/tv/generatePlaylist.py no
+python3 /path/to/tv/generatePlaylist.py no no
 
 sleep 5
 
@@ -21,4 +21,4 @@ echo -ne '\n'
 
 sleep 2
 
-python3 /path/to/tv/generatePlaylist.py yes
+python3 /path/to/tv/generatePlaylist.py yes no

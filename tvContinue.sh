@@ -48,7 +48,7 @@ else
             sleep 2
 
             #Generate a new playlist
-            python3 /path/to/tv/generatePlaylist.py yes
+            python3 /path/to/tv/generatePlaylist.py yes no
 
             sleep 2
 
