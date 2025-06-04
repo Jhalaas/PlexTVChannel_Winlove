@@ -271,7 +271,7 @@ while len(showDirectory) > 0:
         randomEpisodeWrite = randomEpisode.encode('utf-8').strip().decode()
 
         # Get Name of Show
-        showName = randomEpisode.split(dir)[1].split('/')[0]
+        showName = os.path.relpath(randomEpisode, dir).split(os.sep)[0]
         showName = showName.encode('utf-8').strip().decode()
         
         # Get Description of Show (Episode Name)
