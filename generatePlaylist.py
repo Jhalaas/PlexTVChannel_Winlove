@@ -235,134 +235,134 @@ if commercials:
                         
     commercialList = tempShowList.copy()
     
-# Open Files
+# Determine file paths for outputs
 if not backup:
-    tvList = open(os.path.join(tvDirectory, "showList.txt"), "w")
-    m3u = open(os.path.join(tvDirectory, "playlist.m3u"), "w")
+    tv_list_path = os.path.join(tvDirectory, "showList.txt")
+    m3u_path = os.path.join(tvDirectory, "playlist.m3u")
 else:
-    tvList = open(os.path.join(tvDirectory, "showList1.txt"), "w")
-    m3u = open(os.path.join(tvDirectory, "playlist1.m3u"), "w")
-xmltv = open(os.path.join(tvDirectory, "temp_xmltv.xml"), "w")
+    tv_list_path = os.path.join(tvDirectory, "showList1.txt")
+    m3u_path = os.path.join(tvDirectory, "playlist1.m3u")
+xmltv_path = os.path.join(tvDirectory, "temp_xmltv.xml")
 
-# Initial line in M3U file
-m3u.write("#EXTM3U\n")
+# Open Files with context managers
+with open(tv_list_path, "w") as tvList, \
+     open(m3u_path, "w") as m3u, \
+     open(xmltv_path, "w") as xmltv:
 
-# Initial line for xmltv
-xmltv.write("<tv generator-info-name='Todd' source-info-name='Todds Generator'>\n")
-xmltv.write("<channel id='1'>\n")
-xmltv.write("<display-name>" + channelName + "</display-name>\n")
-xmltv.write("<icon src='" + showPoster + "'/>\n")
-xmltv.write("</channel>\n")
+    # Initial line in M3U file
+    m3u.write("#EXTM3U\n")
 
-# Generate Blocks of Episodes & puts back into directory
-while blockCounter < len(showDirectory):
-    print ("Generating Blocks..." + str(len(showDirectory) - blockCounter) + " left.")
-    showDirectory[blockCounter] = generateBlock(showDirectory[blockCounter])
-    blockCounter += 1
+    # Initial line for xmltv
+    xmltv.write("<tv generator-info-name='Todd' source-info-name='Todds Generator'>\n")
+    xmltv.write("<channel id='1'>\n")
+    xmltv.write("<display-name>" + channelName + "</display-name>\n")
+    xmltv.write("<icon src='" + showPoster + "'/>\n")
+    xmltv.write("</channel>\n")
 
-# Loops through show directory and generate random schedule
-while len(showDirectory) > 0:
-    randomShow = random.randint(0, len(showDirectory)-1) # already a random show because populated in random order
-    specificCommercialFound = False # Initial Specific Commercial
-    initialRunThrough = True
+    # Generate Blocks of Episodes & puts back into directory
+    while blockCounter < len(showDirectory):
+        print ("Generating Blocks..." + str(len(showDirectory) - blockCounter) + " left.")
+        showDirectory[blockCounter] = generateBlock(showDirectory[blockCounter])
+        blockCounter += 1
 
-    while len(showDirectory[randomShow]) > 0:
-        randomEpisode = random.choice(showDirectory[randomShow])
-        randomEpisodeWrite = randomEpisode.encode('utf-8').strip().decode()
+    # Loops through show directory and generate random schedule
+    while len(showDirectory) > 0:
+        randomShow = random.randint(0, len(showDirectory)-1)  # already a random show because populated in random order
+        specificCommercialFound = False  # Initial Specific Commercial
+        initialRunThrough = True
 
-        # Get Name of Show
-        showName = randomEpisode.split(dir)[1].split('/')[0]
-        showName = showName.encode('utf-8').strip().decode()
-        
-        # Get Description of Show (Episode Name)
-        showDesc = os.path.basename(randomEpisode)
-        showDesc = os.path.splitext(showDesc)[0]
+        while len(showDirectory[randomShow]) > 0:
+            randomEpisode = random.choice(showDirectory[randomShow])
+            randomEpisodeWrite = randomEpisode.encode('utf-8').strip().decode()
 
-        if (commercials):
-            # Only check for specific commercial on initial run-through
-            if initialRunThrough:
-                initialRunThrough = False # No longer initial run-through
-                
-                # Check to see if there is specific commercial
-                for show in commercialSpecific.keys():
-                    if show.lower() in showName.lower():
-                        randomCommercial = random.choice(commercialSpecific[show])
-                        specificCommercialFound = True # Found a specific commercial
+            # Get Name of Show
+            showName = randomEpisode.split(dir)[1].split('/')[0]
+            showName = showName.encode('utf-8').strip().decode()
 
-        print("Writing: " + showName)
-        
-        # Write episode to txt file
-        tvList.write(randomEpisodeWrite)
-        tvList.write("\n")
+            # Get Description of Show (Episode Name)
+            showDesc = os.path.basename(randomEpisode)
+            showDesc = os.path.splitext(showDesc)[0]
 
-        #Need to get duration for XML and array
-        cur_duration = checkDuration(randomEpisode)
+            if (commercials):
+                # Only check for specific commercial on initial run-through
+                if initialRunThrough:
+                    initialRunThrough = False  # No longer initial run-through
 
-        # Write episode to m3u file
-        m3u.write("#EXTINF: " + str(cur_duration) + ", " + showDesc + "\n")
-        m3u.write("file://" + randomEpisodeWrite + "\n")
+                    # Check to see if there is specific commercial
+                    for show in commercialSpecific.keys():
+                        if show.lower() in showName.lower():
+                            randomCommercial = random.choice(commercialSpecific[show])
+                            specificCommercialFound = True  # Found a specific commercial
 
-        # Add extra guide information
-        showDesc += " ||\n\n "
-        showDesc += getShowDescription(showName)
+            print("Writing: " + showName)
 
-        #Unicode Stuff
-        showName = showName.encode('ascii', 'ignore').decode('ascii')
-        showDesc = showDesc.encode('ascii', 'ignore').decode('ascii')
+            # Write episode to txt file
+            tvList.write(randomEpisodeWrite)
+            tvList.write("\n")
 
-        # Write episode to xmltv file
-        xmltv.write("<programme channel='1' start='{tempStartTime} " + timezone + "' stop='{tempEndTime} " + timezone + "'>\n")
-        xmltv.write("<title lang='en'>" + showName + "</title>\n")
-        xmltv.write("<desc lang='en'>" + showDesc + "</desc>\n")
-        xmltv.write("<icon height='' src='" + getShowPoster(showName) + "' width=''/>\n")
-        xmltv.write("<video/>\n<date/>\n<new/>\n</programme>\n")
+            #Need to get duration for XML and array
+            cur_duration = checkDuration(randomEpisode)
+
+            # Write episode to m3u file
+            m3u.write("#EXTINF: " + str(cur_duration) + ", " + showDesc + "\n")
+            m3u.write("file://" + randomEpisodeWrite + "\n")
+
+            # Add extra guide information
+            showDesc += " ||\n\n "
+            showDesc += getShowDescription(showName)
+
+            #Unicode Stuff
+            showName = showName.encode('ascii', 'ignore').decode('ascii')
+            showDesc = showDesc.encode('ascii', 'ignore').decode('ascii')
+
+            # Write episode to xmltv file
+            xmltv.write("<programme channel='1' start='{tempStartTime} " + timezone + "' stop='{tempEndTime} " + timezone + "'>\n")
+            xmltv.write("<title lang='en'>" + showName + "</title>\n")
+            xmltv.write("<desc lang='en'>" + showDesc + "</desc>\n")
+            xmltv.write("<icon height='' src='" + getShowPoster(showName) + "' width=''/>\n")
+            xmltv.write("<video/>\n<date/>\n<new/>\n</programme>\n")
 
         # If commercials
-        if (commercials):
+            if (commercials):
 
             # If there is no specific commercial
-            if not specificCommercialFound:
-                randomCommercial = getRandomCommercial(commercialList).encode('utf-8').strip().decode()
+                if not specificCommercialFound:
+                    randomCommercial = getRandomCommercial(commercialList).encode('utf-8').strip().decode()
 
-            commercial_duration = checkDuration(randomCommercial)
+                commercial_duration = checkDuration(randomCommercial)
                 
-            m3u.write("#EXTINF: " + str(commercial_duration) + ", Commercial\n")
-            m3u.write("file://" + randomCommercial + "\n")
+                m3u.write("#EXTINF: " + str(commercial_duration) + ", Commercial\n")
+                m3u.write("file://" + randomCommercial + "\n")
 
         # Round duration to the nearest second
-        cur_duration = math.ceil(cur_duration)
+            cur_duration = math.ceil(cur_duration)
 
         # Add Episode and Duration to dictionary
-        showDurations.append(cur_duration)
+            showDurations.append(cur_duration)
 
         # Remove the episode
         #print ("Removing: " + randomEpisode)
-        showDirectory[randomShow].remove(randomEpisode)
+            showDirectory[randomShow].remove(randomEpisode)
 
-        specificCommercialFound = False
+            specificCommercialFound = False
 
-    # Remove show
-    del showDirectory[randomShow]
+        # Remove show
+        del showDirectory[randomShow]
 
-# Close xmltv
-xmltv.write("</tv>")
+    # Close xmltv
+    xmltv.write("</tv>")
 
-# Close files
-tvList.close()
-m3u.close()
-xmltv.close()
 
 # store variables to file for later xmltv generation
-temp_variables = open(os.path.join(tvDirectory, "temp_variables.py"), "w")
-temp_variables.write("tvDirectory='" + tvDirectory +"'")
-temp_variables.write("\n")
-if backup:
-    temp_variables.write("backup=True")
-else:
-    temp_variables.write("backup=False")
-temp_variables.write("\n")
-temp_variables.write("showDurations=" + str(showDurations))
-temp_variables.close()
+with open(os.path.join(tvDirectory, "temp_variables.py"), "w") as temp_variables:
+    temp_variables.write("tvDirectory='" + tvDirectory +"'")
+    temp_variables.write("\n")
+    if backup:
+        temp_variables.write("backup=True")
+    else:
+        temp_variables.write("backup=False")
+    temp_variables.write("\n")
+    temp_variables.write("showDurations=" + str(showDurations))
 
 print ("Playlist Duration in seconds: " + str(playlistDuration))
 print("Finished! Happy Streaming!")
