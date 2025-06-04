@@ -25,7 +25,7 @@ Ever wanted a personal 24/7 TV channel packed with your favorite shows and comme
 - FFmpeg (required for moviepy on Windows and Linux)
 
 ## Windows Quick Start
-1. Run `setup_windows.bat` once. It installs the Python packages and creates a **PlexTVChannel_GUI** shortcut on your desktop.
+1. Run `setup_windows.bat` once. It installs the Python packages, schedules the automation tasks, and creates a **PlexTVChannel_GUI** shortcut on your desktop.
 2. Double‑click the shortcut to open the GUI.
 3. Fill in your show directories and options, then click **Run**. The playlist and XMLTV files are generated automatically.
 
@@ -38,7 +38,7 @@ Ever wanted a personal 24/7 TV channel packed with your favorite shows and comme
 
 ### Windows Usage
 
-Run **setup_windows.bat** once to install the required Python packages and create a desktop shortcut. After the setup completes you can simply double click the **PlexTVChannel_GUI** shortcut on your desktop to open the graphical interface. The GUI lets you configure options and will update `config.py` before running `generatePlaylist.py` and `generateXMLTV.py` for you.
+Run **setup_windows.bat** once to install the required Python packages, schedule the automation tasks, and create a desktop shortcut. After the setup completes you can simply double click the **PlexTVChannel_GUI** shortcut on your desktop to open the graphical interface. The GUI lets you configure options and will update `config.py` before running `generatePlaylist.py` and `generateXMLTV.py` for you.
 
 ---
 
@@ -81,18 +81,6 @@ In Plex, go to **Live TV & DVR** and add a device using the IP and port of xTeVe
 
 ---
 
-## Automation
-Automation scripts are provided for both Linux and Windows. Linux users can schedule
-`tvStart.sh` and `tvContinue.sh` via `cron`, while Windows users can run the
-equivalent PowerShell scripts `tvStart.ps1` and `tvContinue.ps1` with the Task
-Scheduler. All scripts need editing to match your paths and include an example
-of refreshing the Plex guide using a Plex token.
-
 ## Support
-This project was put together with love for the community. Donations are appreciated but certainly not required. [PayPal](https://paypal.me/tmurphy605)
 
-Feel free to reach out with any questions.
-
-— **Todd**
-
-[My Website](http://toddamurphy.me/)
+— **SoraSkyBlue**
