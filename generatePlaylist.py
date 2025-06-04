@@ -6,6 +6,7 @@ import time
 import math
 from datetime import datetime, timedelta
 import tvdb_api
+import config
 
 # Display help
 # Check if it is a backup file
@@ -23,25 +24,23 @@ else:
         commercials = True
         print ("COMMERCIALS FLAG SET TO TRUE")
         time.sleep(3)
+########################################################
+########################################################
+#        Load configuration variables                  #
+########################################################
+########################################################
+
+cartoons = config.cartoons
+dir = config.dir
+tvDirectory = config.tvDirectory
+commercialsDirectory = config.commercialsDirectory
+timezone = config.timezone
+showPoster = config.showPoster
+channelName = config.channelName
+
 if dir == "":
-    print ("Please populate your 'dir' variable! It cannot be null. Open up the script")
+    print ("Please populate your 'dir' variable in config.py! It cannot be null.")
     exit()
-
-
-########################################################
-########################################################
-#        Edit these variable to your system!           #
-########################################################
-########################################################
-
-cartoons = ["show1", "show2", "show3"]
-
-dir = "" # Directory to grab shows from (make sure there is a "/" at the end!)
-tvDirectory = "" # Directory where files will be generated (make sure there is a "/" at the end!)
-commercialsDirectory = "" # Directory where commercials will be pulled from (make sure there is a "/" at the end!)
-timezone = "" # Enter Timezone (Example: "-0400" for EST)
-showPoster = ""
-channelName = ""
 
 ########################################################
 ########################################################
@@ -196,37 +195,41 @@ while len(cartoonsLeft) != 0:
     currentShow = cartoonsLeft[randomNumber]
     cartoonsLeft.remove(currentShow)
 
-    for file in os.listdir(dir + currentShow):
-        if "Specials" in file or "Subs" in file: #omit specials, extras, subtitles and deleted scenes
+    show_path = os.path.join(dir, currentShow)
+    for file in os.listdir(show_path):
+        if "Specials" in file or "Subs" in file:  # omit specials, extras, subtitles and deleted scenes
             continue
-        if os.path.isfile(dir + currentShow + "/" + file):
-            writeToArray(dir + currentShow + "/" + file)
+        file_path = os.path.join(show_path, file)
+        if os.path.isfile(file_path):
+            writeToArray(file_path)
         else:
-            for seasonFile in os.listdir(dir + currentShow + "/" + file):
-                writeToArray(dir + currentShow + "/" + file + "/" + seasonFile)
+            for seasonFile in os.listdir(file_path):
+                writeToArray(os.path.join(file_path, seasonFile))
     showDirectory.append(tempShowList.copy())
 
 # Clear Temp Show List
 tempShowList = []
 
 # Loops into commercials directory
-if (commercials):
+if commercials:
     for file in os.listdir(commercialsDirectory):
-        if "ignore" in file: #omit commercials you dont want
+        if "ignore" in file:  # omit commercials you dont want
             continue
-        if os.path.isfile(commercialsDirectory + file):
-            writeToArray(commercialsDirectory + file)
+        file_path = os.path.join(commercialsDirectory, file)
+        if os.path.isfile(file_path):
+            writeToArray(file_path)
         else:
-            for subFile in os.listdir(commercialsDirectory + file):
-                if os.path.isfile(commercialsDirectory + file + "/" + subFile):
-                    writeToArray(commercialsDirectory + file + "/" + subFile)
+            for subFile in os.listdir(file_path):
+                sub_path = os.path.join(file_path, subFile)
+                if os.path.isfile(sub_path):
+                    writeToArray(sub_path)
                 else:
                     tempSpecificList = []
                     tempSpecificShow = ""
-                    for specificCommercial in os.listdir(commercialsDirectory + file + "/" + subFile):
-                        tempSpecificList.append(commercialsDirectory + file + "/" + subFile + "/" + specificCommercial)
+                    for specificCommercial in os.listdir(sub_path):
+                        tempSpecificList.append(os.path.join(sub_path, specificCommercial))
                         tempSpecificShow = specificCommercial
-
+                    
                     # After Specific Show list is generated, insert into dictionary
                     commercialSpecific[tempSpecificShow] = tempSpecificList.copy()
                         
@@ -234,12 +237,12 @@ if (commercials):
     
 # Open Files
 if not backup:
-    tvList = open(tvDirectory + "showList.txt", "w")
-    m3u = open(tvDirectory + "playlist.m3u", "w")
+    tvList = open(os.path.join(tvDirectory, "showList.txt"), "w")
+    m3u = open(os.path.join(tvDirectory, "playlist.m3u"), "w")
 else:
-    tvList = open(tvDirectory + "showList1.txt", "w")
-    m3u = open(tvDirectory + "playlist1.m3u", "w")
-xmltv = open(tvDirectory + "temp_xmltv.xml", "w")
+    tvList = open(os.path.join(tvDirectory, "showList1.txt"), "w")
+    m3u = open(os.path.join(tvDirectory, "playlist1.m3u"), "w")
+xmltv = open(os.path.join(tvDirectory, "temp_xmltv.xml"), "w")
 
 # Initial line in M3U file
 m3u.write("#EXTM3U\n")
@@ -350,7 +353,7 @@ m3u.close()
 xmltv.close()
 
 # store variables to file for later xmltv generation
-temp_variables = open(tvDirectory + "temp_variables.py", "w")
+temp_variables = open(os.path.join(tvDirectory, "temp_variables.py"), "w")
 temp_variables.write("tvDirectory='" + tvDirectory +"'")
 temp_variables.write("\n")
 if backup:
