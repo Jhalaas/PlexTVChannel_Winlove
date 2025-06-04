@@ -52,7 +52,6 @@ cartoonsLeft = cartoons.copy()
 showDirectory = []
 commercialList = []
 commercialSpecific = {}
-previousRandomShow = 999
 playlistDuration = 0
 showDurations = []
 showName = ""
