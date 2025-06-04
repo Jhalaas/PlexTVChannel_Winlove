@@ -274,8 +274,9 @@ with open(tv_list_path, "w") as tvList, \
             randomEpisode = random.choice(showDirectory[randomShow])
             randomEpisodeWrite = randomEpisode.encode('utf-8').strip().decode()
 
-            # Get Name of Show
-            showName = randomEpisode.split(dir)[1].split('/')[0]
+            # Get Name of Show using OS independent paths
+            rel_path = os.path.relpath(randomEpisode, dir)
+            showName = rel_path.split(os.sep)[0]
             showName = showName.encode('utf-8').strip().decode()
 
             # Get Description of Show (Episode Name)

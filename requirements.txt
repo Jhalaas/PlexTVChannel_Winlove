@@ -1,2 +1,2 @@
-moviepy
-tvdb_api
+moviepy==2.2.1
+tvdb_api==3.1.0
