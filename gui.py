@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import subprocess
+import sys
 import config
 
 class App(tk.Tk):
@@ -95,8 +96,8 @@ class App(tk.Tk):
         backup = 'yes' if self.backup_var.get() else 'no'
         commercials = 'yes' if self.commercials_flag.get() else 'no'
         try:
-            subprocess.run(['python', 'generatePlaylist.py', backup, commercials], check=True)
-            subprocess.run(['python', 'generateXMLTV.py'], check=True)
+            subprocess.run([sys.executable, 'generatePlaylist.py', backup, commercials], check=True)
+            subprocess.run([sys.executable, 'generateXMLTV.py'], check=True)
             messagebox.showinfo('Success', 'Files generated successfully!')
         except subprocess.CalledProcessError as e:
             messagebox.showerror('Error', f'An error occurred: {e}')
