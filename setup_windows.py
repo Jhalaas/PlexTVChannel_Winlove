@@ -26,7 +26,29 @@ def create_shortcut():
         print('Could not locate Desktop path. Shortcut not created.')
 
 
+def schedule_tasks():
+    """Create Windows Task Scheduler entries for automation scripts."""
+    repo_dir = os.path.dirname(os.path.abspath(__file__))
+    start_ps1 = os.path.join(repo_dir, 'tvStart.ps1')
+    continue_ps1 = os.path.join(repo_dir, 'tvContinue.ps1')
+
+    # Schedule tvStart.ps1 to run at logon
+    subprocess.call([
+        'schtasks', '/Create', '/TN', 'PlexTV_Start',
+        '/TR', f'powershell.exe -ExecutionPolicy Bypass -File "{start_ps1}"',
+        '/SC', 'ONLOGON', '/RL', 'HIGHEST', '/F'
+    ])
+
+    # Schedule tvContinue.ps1 to run every 15 minutes
+    subprocess.call([
+        'schtasks', '/Create', '/TN', 'PlexTV_Continue',
+        '/TR', f'powershell.exe -ExecutionPolicy Bypass -File "{continue_ps1}"',
+        '/SC', 'MINUTE', '/MO', '15', '/RL', 'HIGHEST', '/F'
+    ])
+
+
 if __name__ == '__main__':
     install_requirements()
     create_shortcut()
-    print('Setup complete. Use the desktop shortcut to launch the GUI.')
+    schedule_tasks()
+    print('Setup complete. Automation tasks have been scheduled.')
