@@ -31,9 +31,10 @@ Ever wanted a personal 24/7 TV channel packed with your favorite shows and comme
 
 ## Linux Quick Start
 1. Edit `config.py` and populate the directory paths and channel information.
-2. Run `python3 generatePlaylist.py no no` to build `playlist.m3u` and `xmltv.xml`.
-3. Launch VLC with the generated playlist to start streaming.
-4. Configure xTeVe to read the playlist and XMLTV guide, then add xTeVe as a DVR device in Plex.
+2. Run `python3 generatePlaylist.py no no` to build `playlist.m3u` and temporary guide files.
+3. Run `python3 generateXMLTV.py` to create `xmltv.xml` from those temporary files.
+4. Launch VLC with the generated playlist to start streaming.
+5. Configure xTeVe to read the playlist and XMLTV guide, then add xTeVe as a DVR device in Plex.
 
 ### Windows Usage
 
@@ -58,6 +59,9 @@ Run the playlist generator with optional flags for backups and commercials:
 python3 generatePlaylist.py <backup? (yes|no)> <commercials? (yes|no)>
 python3 generateXMLTV.py
 ```
+`generatePlaylist.py` creates `playlist.m3u` along with the temporary files
+`temp_xmltv.xml` and `temp_variables.py`. Running `generateXMLTV.py` afterward
+converts these temporary files into the final `xmltv.xml` guide.
 
 ### VLC Streaming
 Start streaming the generated playlist over HTTP using VLC or `cvlc` on a headless server:
