@@ -12,8 +12,8 @@ import config
 # Check if it is a backup file
 backup = False
 commercials = False
-if not len(sys.argv) > 1:
-    print ("Incorrect Usage: python3 generateShowList.py <backup? (yes | no)> <commercials? (yes | no)>")
+if len(sys.argv) < 3:
+    print ("Incorrect Usage: python3 generatePlaylist.py <backup? (yes | no)> <commercials? (yes | no)>")
     exit()
 else:
     if sys.argv[1] == "yes":
