@@ -81,19 +81,6 @@ In Plex, go to **Live TV & DVR** and add a device using the IP and port of xTeVe
 
 ---
 
-## Automation
-Automation scripts are provided for both Linux and Windows. Linux users can schedule
-`tvStart.sh` and `tvContinue.sh` via `cron`, while Windows users can run the
-equivalent PowerShell scripts `tvStart.ps1` and `tvContinue.ps1` with the Task
-Scheduler. Running `setup_windows.bat` will create these scheduled tasks
-automatically. All scripts need editing to match your paths and include an
-example of refreshing the Plex guide using a Plex token.
-
 ## Support
-This project was put together with love for the community. Donations are appreciated but certainly not required. [PayPal](https://paypal.me/tmurphy605)
 
-Feel free to reach out with any questions.
-
-— **Todd**
-
-[My Website](http://toddamurphy.me/)
+— **SoraSkyBlue**
